@@ -131,6 +131,30 @@ const emptyState = document.getElementById("emptyState");
 const historyTable = document.getElementById("historyTable");
 let deleteIndex = -1;
 
+/* ===== GENERATE SECURE RECEIPT NUMBER ===== */
+function generateSecureReceiptNumber() {
+  // Use crypto API for cryptographically secure random numbers
+  if (window.crypto && window.crypto.getRandomValues) {
+    const array = new Uint32Array(3);
+    window.crypto.getRandomValues(array);
+    
+    // Generate format: BRX-XXXXXX-XXXX
+    const part1 = (array[0] % 1000000).toString().padStart(6, '0');
+    const part2 = (array[1] % 10000).toString().padStart(4, '0');
+    
+    return `BRX-${part1}-${part2}`;
+  }
+  
+  // Fallback to Math.random with timestamp mixing
+  const timestamp = Date.now();
+  const random1 = Math.floor(Math.random() * 1000000);
+  const random2 = Math.floor(Math.random() * 10000);
+  const mixed1 = ((timestamp * random1) % 1000000).toString().padStart(6, '0');
+  const mixed2 = ((timestamp * random2) % 10000).toString().padStart(4, '0');
+  
+  return `BRX-${mixed1}-${mixed2}`;
+}
+
 /* ===== LOAD RECEIPTS ===== */
 function loadHistory() {
   historyBody.innerHTML = "";
@@ -327,7 +351,7 @@ async function downloadPDF(index) {
   document.body.appendChild(tempDiv);
   
   const qr = new QRCode(tempDiv, {
-    text: `https://braxdel.com/verify.html?ref=${receipt.receiptNo}`,
+    text: `https://luxury-lamington-0be902.netlify.app/verify.html?ref=${receipt.receiptNo}`,
     width: 90,
     height: 90
   });

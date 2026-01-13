@@ -39,7 +39,7 @@
   <input id="customer" placeholder="Enter customer name">
 
   <label>Receipt #</label>
-  <input id="receiptNo" placeholder="e.g. BRX-001" value="BRX-001">
+  <input id="receiptNo" placeholder="Auto-generated" readonly style="background:#f5f5f5;cursor:not-allowed;">
 
   <h3>Items</h3>
 
@@ -61,7 +61,7 @@
 
   <label>Payment Method</label>
   <select id="payment">
-    <option value="">Select payment method</option>
+   
     <option>Bank Transfer</option>
     <option>POS</option>
     <option>Cash</option>
@@ -158,6 +158,53 @@ dateInput.valueAsDate = new Date();
 
 let receiptData = [];
 
+/* ================= GENERATE SECURE RECEIPT NUMBER ================= */
+function generateSecureReceiptNumber() {
+  // Use crypto API for cryptographically secure random numbers
+  if (window.crypto && window.crypto.getRandomValues) {
+    const array = new Uint32Array(3);
+    window.crypto.getRandomValues(array);
+    
+    // Generate format: BRX-XXXXXX-XXXX
+    const part1 = (array[0] % 1000000).toString().padStart(6, '0');
+    const part2 = (array[1] % 10000).toString().padStart(4, '0');
+    
+    return `BRX-${part1}-${part2}`;
+  }
+  
+  // Fallback to Math.random with timestamp mixing for additional entropy
+  const timestamp = Date.now();
+  const random1 = Math.floor(Math.random() * 1000000);
+  const random2 = Math.floor(Math.random() * 10000);
+  const mixed1 = ((timestamp * random1) % 1000000).toString().padStart(6, '0');
+  const mixed2 = ((timestamp * random2) % 10000).toString().padStart(4, '0');
+  
+  return `BRX-${mixed1}-${mixed2}`;
+}
+
+/* ================= CHECK FOR DUPLICATE RECEIPT NUMBER ================= */
+function isReceiptNumberUnique(receiptNo) {
+  const history = JSON.parse(localStorage.getItem("receipts") || "[]");
+  return !history.some(r => r.receiptNo === receiptNo);
+}
+
+/* ================= GENERATE UNIQUE RECEIPT NUMBER ================= */
+function generateUniqueReceiptNumber() {
+  let receiptNo;
+  let attempts = 0;
+  const maxAttempts = 10;
+  
+  do {
+    receiptNo = generateSecureReceiptNumber();
+    attempts++;
+  } while (!isReceiptNumberUnique(receiptNo) && attempts < maxAttempts);
+  
+  return receiptNo;
+}
+
+// Generate receipt number on page load
+receiptNoInput.value = generateUniqueReceiptNumber();
+
 /* ================= ADD ITEM ================= */
 function addItem() {
   const row = document.createElement("div");
@@ -219,7 +266,7 @@ function generateReceipt() {
 
     pQR.innerHTML = "";
     new QRCode(pQR, {
-      text: `https://braxdel.com/verify.html?ref=${receiptNoInput.value}`,
+      text: `https://luxury-lamington-0be902.netlify.app/verify.html?ref=${receiptNoInput.value}`,
       width: 90,
       height: 90
     });
