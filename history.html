@@ -26,6 +26,7 @@
   cursor: pointer;
   font-size: 0.85rem;
   font-weight: 600;
+  transition: all 0.3s;
 }
 
 .btn-delete {
@@ -37,6 +38,7 @@
   cursor: pointer;
   font-size: 0.85rem;
   font-weight: 600;
+  transition: all 0.3s;
 }
 
 .btn-download:hover {
@@ -51,16 +53,150 @@
   text-align: center;
   padding: 40px;
   color: #777;
+  font-size: 1rem;
 }
 
+/* Mobile Card View */
+.receipt-card {
+  display: none;
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  border: 1px solid #e0e0e0;
+}
+
+.receipt-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #ddd;
+}
+
+.receipt-card-number {
+  font-weight: 700;
+  color: var(--primary);
+  font-size: 0.95rem;
+}
+
+.receipt-card-date {
+  color: #666;
+  font-size: 0.8rem;
+}
+
+.receipt-card-details {
+  margin-bottom: 12px;
+}
+
+.receipt-card-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 0.85rem;
+}
+
+.receipt-card-label {
+  color: #666;
+  font-weight: 500;
+}
+
+.receipt-card-value {
+  color: var(--secondary);
+  font-weight: 600;
+}
+
+.receipt-card-total {
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.receipt-card-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.receipt-card-actions button {
+  flex: 1;
+  padding: 10px;
+  font-size: 0.85rem;
+}
+
+/* Tablet responsiveness */
+@media (max-width: 1024px) {
+  table {
+    font-size: 0.85rem;
+  }
+  
+  th, td {
+    padding: 10px 8px;
+  }
+  
+  .btn-download, .btn-delete {
+    padding: 7px 12px;
+    font-size: 0.8rem;
+  }
+}
+
+/* Mobile responsiveness */
 @media (max-width: 768px) {
+  #historyTable {
+    display: none !important;
+  }
+  
+  .receipt-card {
+    display: block;
+  }
+  
   .action-cell {
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
   }
   
   .btn-download, .btn-delete {
     width: 100%;
+    padding: 10px;
+    font-size: 0.85rem;
+  }
+  
+  .empty {
+    padding: 60px 20px;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .receipt-card {
+    padding: 14px;
+    margin-bottom: 10px;
+  }
+  
+  .receipt-card-number {
+    font-size: 0.9rem;
+  }
+  
+  .receipt-card-date {
+    font-size: 0.75rem;
+  }
+  
+  .receipt-card-row {
+    font-size: 0.8rem;
+  }
+  
+  .receipt-card-total {
+    font-size: 1rem;
+  }
+  
+  .receipt-card-actions button {
+    padding: 9px;
+    font-size: 0.8rem;
+  }
+  
+  .empty {
+    padding: 50px 15px;
+    font-size: 0.9rem;
   }
 }
 </style>
@@ -83,6 +219,7 @@
   <section class="card">
     <h2>Receipt History</h2>
 
+    <!-- Desktop/Tablet Table View -->
     <table id="historyTable">
       <thead>
         <tr>
@@ -95,6 +232,9 @@
       </thead>
       <tbody id="historyBody"></tbody>
     </table>
+
+    <!-- Mobile Card View -->
+    <div id="mobileCards"></div>
 
     <div id="emptyState" class="empty" style="display:none">
       No receipts found.
@@ -127,6 +267,7 @@
 
 <script>
 const historyBody = document.getElementById("historyBody");
+const mobileCards = document.getElementById("mobileCards");
 const emptyState = document.getElementById("emptyState");
 const historyTable = document.getElementById("historyTable");
 let deleteIndex = -1;
@@ -158,6 +299,7 @@ function generateSecureReceiptNumber() {
 /* ===== LOAD RECEIPTS ===== */
 function loadHistory() {
   historyBody.innerHTML = "";
+  mobileCards.innerHTML = "";
   const receipts = JSON.parse(localStorage.getItem("receipts") || "[]");
 
   receipts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -165,13 +307,16 @@ function loadHistory() {
   if (!receipts.length) {
     emptyState.style.display = "block";
     historyTable.style.display = "none";
+    mobileCards.style.display = "none";
     return;
   }
 
   emptyState.style.display = "none";
   historyTable.style.display = "table";
+  mobileCards.style.display = "block";
 
   receipts.forEach((r, index) => {
+    // Desktop table row
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td>${new Date(r.createdAt).toLocaleDateString()}</td>
@@ -190,6 +335,35 @@ function loadHistory() {
       </td>
     `;
     historyBody.appendChild(tr);
+
+    // Mobile card
+    const card = document.createElement("div");
+    card.className = "receipt-card";
+    card.innerHTML = `
+      <div class="receipt-card-header">
+        <div class="receipt-card-number">${r.receiptNo}</div>
+        <div class="receipt-card-date">${new Date(r.createdAt).toLocaleDateString()}</div>
+      </div>
+      <div class="receipt-card-details">
+        <div class="receipt-card-row">
+          <span class="receipt-card-label">Customer:</span>
+          <span class="receipt-card-value">${r.customer}</span>
+        </div>
+        <div class="receipt-card-row">
+          <span class="receipt-card-label">Total:</span>
+          <span class="receipt-card-total">NGN ${Number(r.total).toLocaleString()}</span>
+        </div>
+      </div>
+      <div class="receipt-card-actions">
+        <button class="btn-download" onclick='downloadPDF(${index})'>
+          📥 Download
+        </button>
+        <button class="btn-delete" onclick='deleteReceipt(${index})'>
+          🗑 Delete
+        </button>
+      </div>
+    `;
+    mobileCards.appendChild(card);
   });
 }
 
