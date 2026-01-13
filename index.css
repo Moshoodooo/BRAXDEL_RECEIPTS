@@ -329,6 +329,12 @@ button:disabled {
   font-size:clamp(0.8rem, 2vw, 0.95rem);
 }
 
+.preview-info > div:first-child {
+  word-wrap:break-word;
+  overflow-wrap:break-word;
+  max-width:100%;
+}
+
 .preview-info > div:last-child {
   text-align:right;
 }

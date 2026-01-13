@@ -61,7 +61,7 @@
 
   <label>Payment Method</label>
   <select id="payment">
-    
+   
     <option>Bank Transfer</option>
     <option>POS</option>
     <option>Cash</option>
@@ -325,7 +325,18 @@ async function printReceipt() {
   doc.setFontSize(11);
   doc.text("Billed To", margin, y);
   doc.setFont("helvetica", "normal");
-  doc.text(pCustomer.textContent, margin, y + 6);
+  
+  // Handle long customer names with text wrapping
+  const customerName = pCustomer.textContent;
+  const maxWidth = 80; // Maximum width for customer name
+  const lines = doc.splitTextToSize(customerName, maxWidth);
+  
+  lines.forEach((line, index) => {
+    doc.text(line, margin, y + 6 + (index * 5));
+  });
+  
+  // Adjust y position based on number of lines
+  const extraHeight = (lines.length - 1) * 5;
 
   doc.setFont("helvetica", "bold");
   doc.text("Date:", 120, y);
@@ -344,7 +355,7 @@ async function printReceipt() {
   doc.setFont("helvetica", "normal");
   doc.text(pPay.textContent, 145, y);
 
-  y += 18;
+  y += 18 + extraHeight;
 
   // Table Header
   const tableWidth = pageWidth - (2 * margin);
