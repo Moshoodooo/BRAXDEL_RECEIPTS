@@ -48,7 +48,7 @@
     <strong>Description</strong>
     <strong>Qty</strong>
     <strong>Price (NGN)</strong>
-    <span></span>
+    <strong style="text-align:center;">Action</strong>
   </div>
 
   <!-- ITEM ROWS -->
@@ -61,7 +61,7 @@
 
   <label>Payment Method</label>
   <select id="payment">
-   
+    
     <option>Bank Transfer</option>
     <option>POS</option>
     <option>Cash</option>
@@ -211,11 +211,9 @@ function addItem() {
   row.className = "row";
   row.innerHTML = `
     <input placeholder="Item description">
-    <input type="number" min="1" value="1" placeholder="Qty">
+    <input type="number" min="1" placeholder="Qty">
     <input type="number" min="0" placeholder="Price">
-    <button class="btn-danger" type="button" onclick="this.parentElement.remove()">
-      <span style="font-size:1.3em; line-height:1;">×</span>
-    </button>
+    <button class="btn-danger" type="button" onclick="this.parentElement.remove()">×</button>
   `;
   itemsDiv.appendChild(row);
 }
@@ -241,8 +239,8 @@ function generateReceipt() {
       const [d, q, p] = row.querySelectorAll("input");
       if (!d.value) return;
 
-      const qty = Number(q.value);
-      const price = Number(p.value);
+      const qty = Number(q.value) || 1; // Default to 1 if empty
+      const price = Number(p.value) || 0;
       const sum = qty * price;
 
       total += sum;
