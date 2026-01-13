@@ -4,290 +4,76 @@
 <meta charset="UTF-8">
 <title>Braxdel Catering & Food Services – Receipt</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="index.css">
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<style>
-:root {
-  --primary:#ff6b35;
-  --secondary:#001e40;
-  --bg:#f4f6f8;
-  --border:#e0e0e0;
-}
-* { box-sizing:border-box; }
-body {
-  margin:0;
-  font-family:Inter,sans-serif;
-  background:var(--bg);
-  color:#001e40;
-}
-header {
-  background:#fff;
-  padding:1rem 5%;
-  display:flex;
-  align-items:center;
-  gap:12px;
-  font-family:Poppins,sans-serif;
-  font-weight:700;
-  box-shadow:0 2px 10px rgba(0,0,0,.05);
-  font-size:clamp(0.9rem, 2.5vw, 1.1rem);
-}
-header img { width:clamp(32px, 8vw, 42px); }
-main {
-  max-width:920px;
-  margin:2rem auto;
-  padding:0 1rem;
-}
-.card {
-  background:#fff;
-  padding:clamp(1rem, 4vw, 2rem);
-  border-radius:16px;
-  box-shadow:0 10px 30px rgba(0,0,0,.06);
-  margin-bottom:2rem;
-}
-h2 { 
-  color:var(--primary); 
-  margin-top:0; 
-  font-family:Poppins;
-  font-size:clamp(1.3rem, 4vw, 1.8rem);
-}
-h3 {
-  font-size:clamp(1rem, 3vw, 1.2rem);
-  margin:1.5rem 0 0.8rem;
-}
-label { 
-  font-size:clamp(0.8rem, 2vw, 0.85rem); 
-  color:#666;
-  display:block;
-  margin-bottom:0.3rem;
-}
-input,select {
-  width:100%;
-  padding:clamp(10px, 2.5vw, 12px);
-  border-radius:8px;
-  border:1px solid var(--border);
-  margin-bottom:1rem;
-  font-size:clamp(0.85rem, 2vw, 1rem);
-}
-.row {
-  display:grid;
-  grid-template-columns:2fr 0.8fr 1fr auto;
-  gap:8px;
-  margin-bottom:10px;
-  align-items:center;
-}
-button {
-  padding:clamp(10px, 2.5vw, 12px);
-  border-radius:8px;
-  border:none;
-  font-weight:600;
-  cursor:pointer;
-  font-size:clamp(0.85rem, 2vw, 1rem);
-  transition:all 0.3s;
-}
-button:active {
-  transform:scale(0.98);
-}
-.btn-primary { background:var(--primary); color:#fff; width:100%; }
-.btn-secondary { background:var(--secondary); color:#fff; }
-.btn-outline { border:2px solid var(--secondary); background:none; }
-.btn-danger { background:#ffecec; color:#c0392b; padding:8px 12px; }
-#receiptPage { display:none; }
-/* ===== RECEIPT PREVIEW ===== */
-#receiptPreview {
-  max-width:100%;
-  margin:auto;
-  background:#fff;
-  padding:clamp(16px, 4vw, 32px);
-}
-.preview-header {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  border-bottom:2px solid var(--primary);
-  padding-bottom:12px;
-  flex-wrap:wrap;
-  gap:12px;
-}
-.preview-header img { width:clamp(50px, 12vw, 70px); }
-.preview-header h2 {
-  font-size:clamp(1.2rem, 4vw, 1.5rem);
-  margin:0;
-}
-.preview-header small {
-  font-size:clamp(0.75rem, 2vw, 0.9rem);
-}
-.preview-info {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:1rem;
-  margin:20px 0;
-  font-size:clamp(0.8rem, 2vw, 0.95rem);
-}
-.preview-info > div:last-child {
-  text-align:right;
-}
-table {
-  width:100%;
-  border-collapse:collapse;
-  margin:20px 0;
-  font-size:clamp(0.75rem, 2vw, 0.95rem);
-}
-th,td {
-  padding:clamp(8px, 2vw, 12px) clamp(4px, 1.5vw, 10px);
-  border-bottom:1px solid #ddd;
-  text-align:left;
-}
-th { 
-  background:var(--secondary); 
-  color:#fff;
-  font-weight:600;
-  font-size:clamp(0.75rem, 2vw, 0.9rem);
-}
-td:nth-child(2), th:nth-child(2) { text-align:center; }
-td:nth-child(3), th:nth-child(3),
-td:nth-child(4), th:nth-child(4) { text-align:right; }
-.total {
-  text-align:right;
-  margin-top:20px;
-  font-size:clamp(1.1rem, 4vw, 1.3rem);
-  font-weight:700;
-  color:var(--primary);
-}
-.footer {
-  margin-top:30px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  border-top:1px dashed #ddd;
-  padding-top:16px;
-  font-size:clamp(0.75rem, 2vw, 0.85rem);
-  gap:1rem;
-  flex-wrap:wrap;
-}
-.action-buttons {
-  margin-top:20px;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
-
-/* ===== MOBILE RESPONSIVENESS ===== */
-@media (max-width: 768px) {
-  .row {
-    grid-template-columns:1fr;
-    gap:8px;
-  }
-  .row input[type="number"]:first-of-type {
-    order:1;
-  }
-  .row input[type="number"]:last-of-type {
-    order:2;
-  }
-  .row button {
-    order:3;
-    width:100%;
-  }
-  .preview-info {
-    grid-template-columns:1fr;
-    gap:1rem;
-  }
-  .preview-info > div:last-child {
-    text-align:left;
-  }
-  table {
-    font-size:0.7rem;
-  }
-  th, td {
-    padding:6px 4px;
-  }
-  .footer {
-    flex-direction:column;
-    text-align:center;
-  }
-  #pQR {
-    order:-1;
-  }
-}
-
-@media (max-width: 480px) {
-  header {
-    font-size:0.85rem;
-    padding:0.8rem 3%;
-  }
-  main {
-    padding:0 0.5rem;
-    margin:1rem auto;
-  }
-  .card {
-    border-radius:12px;
-  }
-  .action-buttons {
-    grid-template-columns:1fr;
-  }
-  table {
-    font-size:0.65rem;
-  }
-  th, td {
-    padding:5px 3px;
-  }
-}
-
-/* ===== TABLET OPTIMIZATION ===== */
-@media (min-width: 769px) and (max-width: 1024px) {
-  main {
-    max-width:90%;
-  }
-  .row {
-    grid-template-columns:2fr 1fr 1.2fr auto;
-  }
-}
-
-/* ===== PRINT STYLES ===== */
-@media print {
-  body {
-    background:#fff;
-  }
-  header, .action-buttons {
-    display:none;
-  }
-  .card {
-    box-shadow:none;
-    padding:0;
-  }
-  #receiptPreview {
-    padding:20px;
-  }
-}
-</style>
 </head>
+
 <body>
+
 <header>
-  <img src="images/BRAXDEL.png" alt="Braxdel Logo">
-  <span>Braxdel Catering & Food Services</span>
+  <div class="header-left">
+    <img src="images/BRAXDEL.png" alt="Braxdel Logo">
+    <span>Braxdel Catering & Food Services</span>
+  </div>
+
+  <a href="history.html" class="nav-btn">
+    <span>📋</span>
+    <span>View History</span>
+  </a>
 </header>
+
 <main>
+
+<!-- ================= FORM PAGE ================= -->
 <section class="card" id="formPage">
   <h2>Create Receipt</h2>
+
   <label>Date</label>
   <input type="date" id="date">
+
   <label>Customer</label>
-  <input id="customer" placeholder="Customer name">
+  <input id="customer" placeholder="Enter customer name">
+
   <label>Receipt #</label>
-  <input id="receiptNo" value="BRX-001">
+  <input id="receiptNo" placeholder="e.g. BRX-001" value="BRX-001">
+
   <h3>Items</h3>
+
+  <!-- ITEM TABLE HEADER -->
+  <div class="item-header row">
+    <strong>Description</strong>
+    <strong>Qty</strong>
+    <strong>Price (NGN)</strong>
+    <span></span>
+  </div>
+
+  <!-- ITEM ROWS -->
   <div id="items"></div>
-  <button class="btn-outline" onclick="addItem()">+ Add Item</button>
+
+  <button class="btn-outline" type="button" onclick="addItem()">
+    <span style="font-size:1.3em; line-height:1;">+</span>
+    <span>Add Item</span>
+  </button>
+
   <label>Payment Method</label>
   <select id="payment">
+    <option value="">Select payment method</option>
     <option>Bank Transfer</option>
     <option>POS</option>
     <option>Cash</option>
   </select>
-  <button class="btn-primary" onclick="generateReceipt()">Generate Receipt</button>
+
+  <button class="btn-primary" type="button" onclick="generateReceipt()">Generate Receipt</button>
 </section>
-<section class="card" id="receiptPage">
+
+<!-- ================= RECEIPT PAGE ================= -->
+<section class="card" id="receiptPage" style="display:none">
   <div id="receiptPreview">
+
     <div class="preview-header">
       <div>
         <h2>Braxdel Catering</h2>
@@ -295,6 +81,7 @@ td:nth-child(4), th:nth-child(4) { text-align:right; }
       </div>
       <img src="images/BRAXDEL.png" alt="Braxdel Logo">
     </div>
+
     <div class="preview-info">
       <div>
         <strong>Billed To</strong><br>
@@ -306,15 +93,21 @@ td:nth-child(4), th:nth-child(4) { text-align:right; }
         <strong>Payment:</strong> <span id="pPay"></span>
       </div>
     </div>
+
     <table>
       <thead>
         <tr>
-          <th>Description</th><th>Qty</th><th>Price</th><th>Total</th>
+          <th>Description</th>
+          <th>Qty</th>
+          <th>Price</th>
+          <th>Total</th>
         </tr>
       </thead>
       <tbody id="pItems"></tbody>
     </table>
+
     <div class="total">NGN <span id="pTotal"></span></div>
+
     <div class="footer">
       <div>
         Thank you for your patronage<br>
@@ -323,62 +116,140 @@ td:nth-child(4), th:nth-child(4) { text-align:right; }
       <div id="pQR"></div>
     </div>
   </div>
+
   <div class="action-buttons">
     <button class="btn-secondary" onclick="printReceipt()">🖨 Print / Download PDF</button>
     <button class="btn-outline" onclick="location.reload()">↻ New Receipt</button>
   </div>
 </section>
+
 </main>
 
+<!-- ================= SUCCESS MODAL ================= -->
+<div id="successModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-icon">✓</div>
+    <h3>Receipt Generated Successfully!</h3>
+    <p>Your receipt has been created and is ready to download.</p>
+    <button class="modal-close" onclick="closeModal()">Close</button>
+  </div>
+</div>
+
 <script>
+/* ================= DOM ================= */
 const itemsDiv = document.getElementById("items");
-date.valueAsDate = new Date();
-addItem();
-let receiptData = null;
+const formPage = document.getElementById("formPage");
+const receiptPage = document.getElementById("receiptPage");
 
-/* ===== ITEMS ===== */
-function addItem(){
-  const r = document.createElement("div");
-  r.className = "row";
-  r.innerHTML = `
+const dateInput = document.getElementById("date");
+const customerInput = document.getElementById("customer");
+const receiptNoInput = document.getElementById("receiptNo");
+const paymentSelect = document.getElementById("payment");
+
+const pCustomer = document.getElementById("pCustomer");
+const pDate = document.getElementById("pDate");
+const pRef = document.getElementById("pRef");
+const pPay = document.getElementById("pPay");
+const pItems = document.getElementById("pItems");
+const pTotal = document.getElementById("pTotal");
+const pQR = document.getElementById("pQR");
+
+dateInput.valueAsDate = new Date();
+
+let receiptData = [];
+
+/* ================= ADD ITEM ================= */
+function addItem() {
+  const row = document.createElement("div");
+  row.className = "row";
+  row.innerHTML = `
     <input placeholder="Item description">
-    <input type="number" value="1" placeholder="Qty">
-    <input type="number" placeholder="Price">
-    <button class="btn-danger" onclick="this.parentElement.remove()">✕</button>`;
-  itemsDiv.appendChild(r);
+    <input type="number" min="1" value="1" placeholder="Qty">
+    <input type="number" min="0" placeholder="Price">
+    <button class="btn-danger" type="button" onclick="this.parentElement.remove()">
+      <span style="font-size:1.3em; line-height:1;">×</span>
+    </button>
+  `;
+  itemsDiv.appendChild(row);
 }
 
-/* ===== GENERATE PREVIEW ===== */
-function generateReceipt(){
-  let total = 0;
-  pItems.innerHTML = "";
-  receiptData = [];
-  document.querySelectorAll(".row").forEach(row=>{
-    const [d,q,p] = row.querySelectorAll("input");
-    const sum = q.value * p.value;
-    total += sum;
-    receiptData.push({ d:d.value, q:q.value, p:p.value, t:sum });
-    pItems.innerHTML += `
-      <tr>
-        <td>${d.value}</td>
-        <td style="text-align:center">${q.value}</td>
-        <td style="text-align:right">NGN ${(+p.value).toLocaleString()}</td>
-        <td style="text-align:right">NGN ${sum.toLocaleString()}</td>
-      </tr>`;
-  });
-  pCustomer.textContent = customer.value || "Customer";
-  pDate.textContent = date.value;
-  pRef.textContent = receiptNo.value;
-  pPay.textContent = payment.value;
-  pTotal.textContent = total.toLocaleString();
-  pQR.innerHTML = "";
-  new QRCode(pQR,{ text:`https://braxdel.com/verify?ref=${receiptNo.value}`, width:90, height:90 });
-  formPage.style.display = "none";
-  receiptPage.style.display = "block";
+addItem();
+
+/* ================= GENERATE RECEIPT WITH LOADING ================= */
+function generateReceipt() {
+  const btn = event.target;
+  const originalText = btn.innerHTML;
+  
+  // Show loading state
+  btn.disabled = true;
+  btn.innerHTML = 'Generating<span class="loader"></span>';
+  
+  // Simulate 3 second loading
+  setTimeout(() => {
+    let total = 0;
+    receiptData = [];
+    pItems.innerHTML = "";
+
+    document.querySelectorAll("#items .row").forEach(row => {
+      const [d, q, p] = row.querySelectorAll("input");
+      if (!d.value) return;
+
+      const qty = Number(q.value);
+      const price = Number(p.value);
+      const sum = qty * price;
+
+      total += sum;
+      receiptData.push({ d: d.value, q: qty, p: price, t: sum });
+
+      pItems.insertAdjacentHTML("beforeend", `
+        <tr>
+          <td>${d.value}</td>
+          <td>${qty}</td>
+          <td>NGN ${price.toLocaleString()}</td>
+          <td>NGN ${sum.toLocaleString()}</td>
+        </tr>
+      `);
+    });
+
+    pCustomer.textContent = customerInput.value || "Customer";
+    pDate.textContent = dateInput.value;
+    pRef.textContent = receiptNoInput.value;
+    pPay.textContent = paymentSelect.value || "-";
+    pTotal.textContent = total.toLocaleString();
+
+    pQR.innerHTML = "";
+    new QRCode(pQR, {
+      text: `https://braxdel.com/verify.html?ref=${receiptNoInput.value}`,
+      width: 90,
+      height: 90
+    });
+
+    /* ===== SAVE TO LOCAL STORAGE FOR HISTORY ===== */
+    const history = JSON.parse(localStorage.getItem("receipts") || "[]");
+    history.push({
+      receiptNo: receiptNoInput.value,
+      customer: customerInput.value || "Customer",
+      date: dateInput.value,
+      payment: paymentSelect.value || "-",
+      total,
+      items: receiptData,
+      createdAt: new Date().toISOString()
+    });
+    localStorage.setItem("receipts", JSON.stringify(history));
+
+    // Reset button and show receipt
+    btn.disabled = false;
+    btn.innerHTML = originalText;
+    formPage.style.display = "none";
+    receiptPage.style.display = "block";
+  }, 3000);
 }
 
-/* ===== PRINT (Custom layout matching preview) ===== */
-async function printReceipt(){
+/* ================= PRINT / DOWNLOAD PDF WITH MODAL ================= */
+async function printReceipt() {
+  const modal = document.getElementById('successModal');
+  modal.style.display = 'block';
+  
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF("p", "mm", "a4");
   const margin = 15;
@@ -392,9 +263,9 @@ async function printReceipt(){
   // Header text
   doc.setFont("helvetica", "bold");
   doc.setFontSize(18);
-  doc.text("Braxdel Catering", 105, y + 12, { align: "center" });
+  doc.text("Receipt", 105, y + 12, { align: "center" });
   doc.setFontSize(12);
-  doc.text("& Food Services", 105, y + 20, { align: "center" });
+  
 
   y += 40;
 
@@ -450,7 +321,6 @@ async function printReceipt(){
   doc.setFontSize(9);
   
   receiptData.forEach((item, index) => {
-    // Add subtle row background for better readability
     if (index % 2 === 0) {
       doc.setFillColor(248, 248, 248);
       doc.rect(margin, y - 1, tableWidth, 8, "F");
@@ -462,7 +332,6 @@ async function printReceipt(){
     doc.text(`NGN ${Number(item.p).toLocaleString()}`, 145, y + 5, { align: "right" });
     doc.text(`NGN ${item.t.toLocaleString()}`, pageWidth - margin - 3, y + 5, { align: "right" });
     
-    // Row separator line
     doc.setDrawColor(220, 220, 220);
     doc.setLineWidth(0.2);
     doc.line(margin, y + 7, pageWidth - margin, y + 7);
@@ -513,18 +382,24 @@ async function printReceipt(){
     doc.addImage(qrImage, "PNG", pageWidth - margin - 28, y - 8, 25, 25);
   }
 
-  // Save
+  // Save PDF
   doc.save(`Braxdel_${pRef.textContent}.pdf`);
 }
 
-/* ===== HELPERS ===== */
-function loadImage(src){
-  return new Promise(res=>{
-    const img=new Image();
-    img.onload=()=>res(img);
-    img.src=src;
+/* ===== CLOSE MODAL ===== */
+function closeModal() {
+  document.getElementById('successModal').style.display = 'none';
+}
+
+/* ===== LOAD IMAGE HELPER ===== */
+function loadImage(src) {
+  return new Promise(res => {
+    const img = new Image();
+    img.onload = () => res(img);
+    img.src = src;
   });
 }
 </script>
+
 </body>
 </html>
