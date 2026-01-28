@@ -5,7 +5,7 @@
 <title>Braxdel Catering & Food Services – Receipt</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="index.css">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -15,78 +15,138 @@
 <body>
 
 <header>
-  <div class="header-left">
-    <img src="images/BRAXDEL.png" alt="Braxdel Logo">
-    <span>Braxdel Catering & Food Services</span>
-  </div>
+  <div class="header-container">
+    <div class="header-left">
+      <div class="logo-wrapper">
+        <img src="images/BRAXDEL.png" alt="Braxdel Logo">
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">Braxdel Catering</span>
+        <span class="brand-tagline">& Food Services</span>
+      </div>
+    </div>
 
-  <a href="history.html" class="nav-btn">
-    <span>📋</span>
-    <span>View History</span>
-  </a>
+    <a href="history.html" class="nav-btn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+        <polyline points="14 2 14 8 20 8"></polyline>
+        <line x1="16" y1="13" x2="8" y2="13"></line>
+        <line x1="16" y1="17" x2="8" y2="17"></line>
+        <polyline points="10 9 9 9 8 9"></polyline>
+      </svg>
+      <span>View History</span>
+    </a>
+  </div>
 </header>
 
 <main>
 <section class="card" id="formPage">
-  <h2>Create Receipt</h2>
-
-  <label>Date</label>
-  <input type="date" id="date">
-
-  <label>Customer</label>
-  <input id="customer" placeholder="Enter customer name">
-
-  <label>Receipt #</label>
-  <input id="receiptNo" placeholder="Auto-generated" readonly style="background:#f5f5f5;cursor:not-allowed;">
-
-  <h3>Items</h3>
-  <div class="item-header row">
-    <strong>Description</strong>
-    <strong>Qty</strong>
-    <strong>Price (NGN)</strong>
-    <strong style="text-align:center;">Action</strong>
+  <div class="card-header">
+    <h2>Create New Receipt</h2>
+    <p class="card-subtitle">Fill in the details to generate a professional receipt</p>
   </div>
 
-  <div id="items"></div>
+  <div class="form-grid">
+    <div class="form-group">
+      <label>Date</label>
+      <div class="input-wrapper">
+        <input type="date" id="date">
+      </div>
+    </div>
 
-  <button class="btn-outline" type="button" onclick="addItem()">
-    <span style="font-size:1.3em; line-height:1;">+</span>
-    <span>Add Item</span>
+    <div class="form-group">
+      <label>Customer Name</label>
+      <div class="input-wrapper">
+        <input id="customer" placeholder="Enter customer name">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Receipt Number</label>
+      <div class="input-wrapper">
+        <input id="receiptNo" placeholder="Auto-generated" readonly>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Payment Method</label>
+      <div class="input-wrapper">
+        <select id="payment">
+          <option>Bank Transfer</option>
+          <option>POS</option>
+          <option>Cash</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="items-section">
+    <div class="section-header">
+      <h3>Items</h3>
+      <span class="item-count">Add your items below</span>
+    </div>
+
+    <div class="items-table-header">
+      <span>Description</span>
+      <span>Qty</span>
+      <span>Price (NGN)</span>
+      <span></span>
+    </div>
+
+    <div id="items"></div>
+
+    <button class="btn-add-item" type="button" onclick="addItem()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg>
+      <span>Add Item</span>
+    </button>
+  </div>
+
+  <button class="btn-primary" type="button" onclick="generateReceipt()">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+      <polyline points="7 10 12 15 17 10"></polyline>
+      <line x1="12" y1="15" x2="12" y2="3"></line>
+    </svg>
+    <span>Generate & Save to Cloud</span>
   </button>
-
-  <label>Payment Method</label>
-  <select id="payment">
-    <option>Bank Transfer</option>
-    <option>POS</option>
-    <option>Cash</option>
-  </select>
-
-  <button class="btn-primary" type="button" onclick="generateReceipt()">Generate & Save to Cloud</button>
 </section>
 
-<section class="card" id="receiptPage" style="display:none">
+<section class="card receipt-card" id="receiptPage" style="display:none">
   <div id="receiptPreview">
-    <div class="preview-header">
-      <div>
-        <h2>Braxdel Catering</h2>
-        <small>& Food Services</small>
+    <div class="receipt-header">
+      <div class="receipt-brand">
+        <img src="images/BRAXDEL.png" alt="Braxdel Logo">
+        <div>
+          <h2>Braxdel Catering</h2>
+          <p>& Food Services</p>
+        </div>
       </div>
-      <img src="images/BRAXDEL.png" alt="Braxdel Logo">
+      <div class="receipt-badge">OFFICIAL RECEIPT</div>
     </div>
 
-    <div class="preview-info">
-      <div>
-        <strong>Billed To</strong><br>
-        <span id="pCustomer"></span>
+    <div class="receipt-info">
+      <div class="info-block">
+        <span class="info-label">Billed To</span>
+        <span class="info-value" id="pCustomer"></span>
       </div>
-      <div>
-        <strong>Date:</strong> <span id="pDate"></span><br>
-        <strong>Receipt #:</strong> <span id="pRef"></span><br>
-        <strong>Payment:</strong> <span id="pPay"></span>
+      <div class="info-block">
+        <span class="info-label">Date</span>
+        <span class="info-value" id="pDate"></span>
+      </div>
+      <div class="info-block">
+        <span class="info-label">Receipt #</span>
+        <span class="info-value" id="pRef"></span>
+      </div>
+      <div class="info-block">
+        <span class="info-label">Payment Method</span>
+        <span class="info-value" id="pPay"></span>
       </div>
     </div>
 
-    <table>
+    <table class="receipt-table">
       <thead>
         <tr>
           <th>Description</th>
@@ -98,30 +158,55 @@
       <tbody id="pItems"></tbody>
     </table>
 
-    <div class="total">NGN <span id="pTotal"></span></div>
+    <div class="receipt-total">
+      <span>Total Amount</span>
+      <div class="total-amount">NGN <span id="pTotal"></span></div>
+    </div>
 
-    <div class="footer">
-      <div>
-        Thank you for your patronage<br>
-        <strong>Braxdel Catering & Food Services</strong>
+    <div class="receipt-footer">
+      <div class="footer-text">
+        <p class="thanks">Thank you for your patronage</p>
+        <p class="company"><strong>Braxdel Catering & Food Services</strong></p>
       </div>
-      <div id="pQR"></div>
+      <div class="qr-section">
+        <div id="pQR"></div>
+        <p class="qr-label">Scan to verify</p>
+      </div>
     </div>
   </div>
 
   <div class="action-buttons">
-    <button class="btn-secondary" onclick="printReceipt()">🖨 Download PDF</button>
-    <button class="btn-outline" onclick="location.reload()">↻ New Receipt</button>
+    <button class="btn-secondary" onclick="printReceipt()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="6 9 6 2 18 2 18 9"></polyline>
+        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+        <rect x="6" y="14" width="12" height="8"></rect>
+      </svg>
+      Download PDF
+    </button>
+    <button class="btn-outline" onclick="location.reload()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="1 4 1 10 7 10"></polyline>
+        <polyline points="23 20 23 14 17 14"></polyline>
+        <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path>
+      </svg>
+      New Receipt
+    </button>
   </div>
 </section>
 </main>
 
 <div id="successModal" class="modal">
+  <div class="modal-backdrop"></div>
   <div class="modal-content">
-    <div class="modal-icon">✓</div>
+    <div class="modal-icon">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+    </div>
     <h3>Receipt Saved Successfully!</h3>
-    <p>Data is now live in your Firebase Database.</p>
-    <button class="modal-close" onclick="closeModal()">Close</button>
+    <p>Your receipt has been saved to the cloud and is ready to download</p>
+    <button class="modal-close" onclick="closeModal()">Got it</button>
   </div>
 </div>
 
@@ -146,38 +231,40 @@
   const dateInput = document.getElementById("date");
   dateInput.valueAsDate = new Date();
 
-  /* --- Add Item Row --- */
   window.addItem = function() {
     const row = document.createElement("div");
-    row.className = "row";
+    row.className = "item-row";
     row.innerHTML = `
-      <input placeholder="Item description">
-      <input type="number" min="1" placeholder="Qty">
-      <input type="number" min="0" placeholder="Price">
-      <button class="btn-danger" type="button" onclick="this.parentElement.remove()">×</button>
+      <input placeholder="Item description" class="item-desc">
+      <input type="number" min="1" placeholder="1" class="item-qty">
+      <input type="number" min="0" placeholder="0.00" class="item-price">
+      <button class="btn-remove" type="button" onclick="this.parentElement.remove()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
     `;
     itemsDiv.appendChild(row);
   };
-  addItem(); // Initial row
+  addItem();
 
-  /* --- Receipt Number --- */
   function generateID() {
     return `BRX-${Math.floor(Math.random()*900000+100000)}-${Math.floor(Math.random()*9000+1000)}`;
   }
   document.getElementById("receiptNo").value = generateID();
 
-  /* --- Generate and Upload --- */
   window.generateReceipt = async function() {
     const btn = event.target;
     btn.disabled = true;
-    btn.innerHTML = 'Uploading to Firebase...';
+    btn.innerHTML = '<span class="loader"></span><span>Uploading to Firebase...</span>';
 
     let total = 0;
     let itemsData = [];
     const pItems = document.getElementById("pItems");
     pItems.innerHTML = "";
 
-    document.querySelectorAll("#items .row").forEach(row => {
+    document.querySelectorAll("#items .item-row").forEach(row => {
       const [d, q, p] = row.querySelectorAll("input");
       if (!d.value) return;
       const qty = Number(q.value) || 1;
@@ -192,7 +279,6 @@
     });
 
     try {
-      // UPLOAD TO FIRESTORE
       await addDoc(collection(db, "receipts"), {
         receiptNo: document.getElementById("receiptNo").value,
         customer: document.getElementById("customer").value || "Walk-in Customer",
@@ -203,14 +289,12 @@
         createdAt: new Date().toISOString()
       });
 
-      // Update Preview UI
       document.getElementById("pCustomer").textContent = document.getElementById("customer").value || "Customer";
       document.getElementById("pDate").textContent = dateInput.value;
       document.getElementById("pRef").textContent = document.getElementById("receiptNo").value;
       document.getElementById("pPay").textContent = document.getElementById("payment").value;
       document.getElementById("pTotal").textContent = total.toLocaleString();
 
-      // QR Code
       const pQR = document.getElementById("pQR");
       pQR.innerHTML = "";
       new QRCode(pQR, {
@@ -224,27 +308,159 @@
       console.error(e);
       alert("Failed to save. Check internet connection.");
       btn.disabled = false;
-      btn.innerHTML = "Generate & Save to Cloud";
+      btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg><span>Generate & Save to Cloud</span>';
     }
   };
 
-  /* --- PDF Download --- */
   window.printReceipt = async function() {
-    document.getElementById('successModal').style.display = 'block';
+    document.getElementById('successModal').style.display = 'flex';
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF("p", "mm", "a4");
     
-    // Header
-    const logo = await loadImage("images/BRAXDEL.png");
-    if(logo) doc.addImage(logo, "PNG", 15, 15, 28, 28);
-    doc.setFont("helvetica", "bold");
-    doc.text("OFFICIAL RECEIPT", 105, 30, { align: "center" });
+    const pageWidth = doc.internal.pageSize.getWidth();
+    let y = 20;
 
-    // Table & Data (Simplified for this snippet, use your detailed PDF code here)
+    // Header with Logo and Company Name
+    const logo = await loadImage("images/BRAXDEL.png");
+    if(logo) {
+      doc.addImage(logo, "PNG", 15, y, 25, 25);
+    }
+    
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(20);
+    doc.text("Braxdel Catering", 45, y + 10);
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "normal");
+    doc.text("& Food Services", 45, y + 17);
+
+    // Official Receipt Badge
+    doc.setFillColor(255, 107, 53);
+    doc.roundedRect(pageWidth - 60, y, 45, 10, 2, 2, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "bold");
+    doc.text("OFFICIAL RECEIPT", pageWidth - 37.5, y + 6.5, { align: "center" });
+
+    // Orange line separator
+    doc.setDrawColor(255, 107, 53);
+    doc.setLineWidth(0.8);
+    doc.line(15, y + 30, pageWidth - 15, y + 30);
+
+    y = y + 40;
+
+    // Receipt Information Section
+    doc.setTextColor(0, 30, 64);
+    doc.setFillColor(248, 249, 252);
+    doc.roundedRect(15, y, pageWidth - 30, 35, 3, 3, 'F');
+
+    doc.setFontSize(8);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(107, 114, 128);
+    
+    doc.text("BILLED TO", 20, y + 7);
+    doc.text("DATE", 20, y + 18);
+    doc.text("RECEIPT #", pageWidth/2 + 5, y + 7);
+    doc.text("PAYMENT METHOD", pageWidth/2 + 5, y + 18);
+
+    doc.setFont("helvetica", "bold");
     doc.setFontSize(10);
-    doc.text(`Customer: ${document.getElementById("pCustomer").textContent}`, 15, 50);
-    doc.text(`Receipt #: ${document.getElementById("pRef").textContent}`, 15, 55);
-    doc.text(`Total: NGN ${document.getElementById("pTotal").textContent}`, 15, 65);
+    doc.setTextColor(31, 41, 55);
+    
+    doc.text(document.getElementById("pCustomer").textContent, 20, y + 12);
+    doc.text(document.getElementById("pDate").textContent, 20, y + 23);
+    doc.text(document.getElementById("pRef").textContent, pageWidth/2 + 5, y + 12);
+    doc.text(document.getElementById("pPay").textContent, pageWidth/2 + 5, y + 23);
+
+    y = y + 45;
+
+    // Table Header
+    doc.setFillColor(0, 30, 64);
+    doc.roundedRect(15, y, pageWidth - 30, 10, 2, 2, 'F');
+    
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "bold");
+    doc.text("Description", 20, y + 6.5);
+    doc.text("Qty", pageWidth - 80, y + 6.5);
+    doc.text("Price", pageWidth - 60, y + 6.5);
+    doc.text("Total", pageWidth - 30, y + 6.5, { align: "right" });
+
+    y = y + 15;
+
+    // Table Items
+    doc.setTextColor(31, 41, 55);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+    doc.setDrawColor(229, 232, 239);
+    doc.setLineWidth(0.2);
+
+    document.querySelectorAll("#pItems tr").forEach((row, index) => {
+      const cells = row.querySelectorAll("td");
+      if (cells.length === 4) {
+        // Alternate row background
+        if (index % 2 === 0) {
+          doc.setFillColor(248, 249, 252);
+          doc.rect(15, y - 5, pageWidth - 30, 10, 'F');
+        }
+
+        doc.text(cells[0].textContent, 20, y);
+        doc.text(cells[1].textContent, pageWidth - 80, y);
+        doc.text(cells[2].textContent, pageWidth - 60, y);
+        doc.text(cells[3].textContent, pageWidth - 20, y, { align: "right" });
+        
+        // Bottom border
+        doc.line(15, y + 3, pageWidth - 15, y + 3);
+        y += 10;
+      }
+    });
+
+    y += 5;
+
+    // Total Section
+    doc.setFillColor(255, 107, 53, 0.1);
+    doc.setDrawColor(255, 107, 53);
+    doc.setLineWidth(0.5);
+    doc.roundedRect(15, y, pageWidth - 30, 15, 3, 3, 'FD');
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(10);
+    doc.setTextColor(31, 41, 55);
+    doc.text("TOTAL AMOUNT", 20, y + 10);
+
+    doc.setFontSize(16);
+    doc.setTextColor(255, 107, 53);
+    doc.text(`NGN ${document.getElementById("pTotal").textContent}`, pageWidth - 20, y + 10, { align: "right" });
+
+    y += 25;
+
+    // Footer Section
+    doc.setDrawColor(200, 200, 200);
+    doc.setLineWidth(0.3);
+    doc.setLineDash([2, 2]);
+    doc.line(15, y, pageWidth - 15, y);
+    doc.setLineDash([]);
+
+    y += 10;
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+    doc.setTextColor(107, 114, 128);
+    doc.text("Thank you for your patronage", 20, y);
+    
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(9);
+    doc.setTextColor(31, 41, 55);
+    doc.text("Braxdel Catering & Food Services", 20, y + 5);
+
+    // QR Code
+    const qrCanvas = document.querySelector("#pQR canvas");
+    if (qrCanvas) {
+      const qrImage = qrCanvas.toDataURL("image/png");
+      doc.addImage(qrImage, "PNG", pageWidth - 40, y - 5, 25, 25);
+      doc.setFontSize(7);
+      doc.setTextColor(156, 163, 175);
+      doc.text("Scan to verify", pageWidth - 27.5, y + 23, { align: "center" });
+    }
 
     doc.save(`Braxdel_${document.getElementById("pRef").textContent}.pdf`);
   };
