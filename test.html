@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Firestore Write Test</title>
+</head>
+<body>
+  <h1>Firestore Write Test</h1>
+  <button id="testBtn">Run Test Write</button>
+  <pre id="output" style="white-space: pre-wrap; background:#f4f4f4; padding:1rem; margin-top:1rem;"></pre>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCfJoT1cXPjP-ua5Eo-2LOvoFr-389PXD0",
+      authDomain: "braxdel-receips.firebaseapp.com",
+      projectId: "braxdel-receips",
+      storageBucket: "braxdel-receips.firebasestorage.app",
+      messagingSenderId: "21198058228",
+      appId: "1:21198058228:web:560818029764609c2364a1",
+      measurementId: "G-M8YW9JY85E"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const output = document.getElementById("output");
+
+    document.getElementById("testBtn").addEventListener("click", async () => {
+      output.textContent = "Writing...";
+      try {
+        const docRef = await addDoc(collection(db, "receipts"), {
+          test: true,
+          createdAt: new Date().toISOString()
+        });
+        output.textContent = "SUCCESS! Document written with ID: " + docRef.id;
+      } catch (err) {
+        output.textContent =
+          "FAILED\n" +
+          "code: " + err.code + "\n" +
+          "message: " + err.message + "\n" +
+          "full error: " + JSON.stringify(err, Object.getOwnPropertyNames(err), 2);
+        console.error("Full error object:", err);
+      }
+    });
+  </script>
+</body>
+</html>
